@@ -1,5 +1,6 @@
 (function () {
   var root = document.getElementById('root');
+  var legacy = new URLSearchParams(location.search).get('storage') === 'legacy';
   var reloadKey = 'bao-ninh-isolation-reloads';
   var reloadCount = 0;
   var canTrackReloads = true;
@@ -23,6 +24,7 @@
     root.append(card);
   }
   window.coi = {
+    shouldRegister: function () { return legacy; },
     coepCredentialless: function () { return false; },
     doReload: function () {
       if (!canTrackReloads || reloadCount >= 2) { message('Chưa mở được dữ liệu trên trình duyệt này', 'Trang không thể hoàn tất cấu hình lưu dữ liệu. Hãy mở link bằng Safari hoặc Chrome trực tiếp.', true); return; }
@@ -33,6 +35,12 @@
     quiet: true
   };
   async function start() {
+    if (!legacy) {
+      if (!window.isSecureContext || typeof indexedDB === 'undefined' || typeof WebAssembly === 'undefined') {
+        message('Chưa mở được bộ nhớ ứng dụng', 'Hãy cho phép lưu dữ liệu trang web và cập nhật trình duyệt. Dữ liệu cũ không bị xóa.', true); return;
+      }
+      loadApp(); return;
+    }
     if (!window.isSecureContext || !navigator.serviceWorker) {
       message('Cần mở bằng Safari hoặc Chrome', 'Trình duyệt hiện tại không hỗ trợ đầy đủ cơ chế lưu dữ liệu của ứng dụng. Chưa có dữ liệu nào bị xóa.', true); return;
     }
@@ -49,6 +57,9 @@
     try { await navigator.storage.getDirectory(); }
     catch (_) { message('Không truy cập được bộ nhớ trình duyệt', 'Hãy cho phép lưu dữ liệu trang web và dùng chế độ duyệt thường. Không xóa dữ liệu đang có.', true); return; }
     try { sessionStorage.removeItem(reloadKey); } catch (_) {}
+    loadApp();
+  }
+  function loadApp() {
     root.textContent = '';
     (window.salesAppScripts || []).forEach(function (src) {
       var script = document.createElement('script'); script.src = src; script.defer = true;
