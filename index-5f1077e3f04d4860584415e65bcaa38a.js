@@ -58184,17 +58184,27 @@ __d(
         );
       }),
       (e.listProductHistory = async function (t, n) {
-        const [c, o] = await Promise.all([
-          t.getAllAsync(
-            "SELECT sm.*, p.unit, NULL AS invoice_id, NULL AS invoice_code, NULL AS customer, 'MOVEMENT' AS source FROM stock_movements sm JOIN products p ON p.id = sm.product_id WHERE sm.product_id = ?",
-            n,
-          ),
-          t.getAllAsync(
-            "SELECT ii.id, ii.product_id, 'OUT' AS type, ii.qty, ii.unit_price AS unit_cost, 'Xuất theo hóa đơn' AS note, i.created_at, ii.unit, i.id AS invoice_id, i.code AS invoice_code, i.customer, 'INVOICE' AS source FROM invoice_items ii JOIN invoices i ON i.id = ii.invoice_id WHERE ii.product_id = ?",
-            n,
-          ),
-        ]);
-        return [...c, ...o].sort((t, n) => {
+        const [c, o] = await Promise.all([e.listMovements(t), e.listInvoices(t)]),
+          s = c
+            .filter((e) => Number(e.product_id) === Number(n))
+            .map((e) => ({ ...e, source: "MOVEMENT", invoice_id: null, invoice_code: null, customer: null })),
+          E = (await Promise.all(o.map(async (c) => ({ invoice: c, items: await e.getInvoiceItems(t, c.id) })))).flatMap(({ invoice: e, items: t }) =>
+            t.filter((e) => Number(e.product_id) === Number(n)).map((t) => ({
+              id: t.id,
+              product_id: t.product_id,
+              type: "OUT",
+              qty: t.qty,
+              unit_cost: t.unit_price,
+              note: "Xuất theo hóa đơn",
+              created_at: e.created_at,
+              unit: t.unit,
+              invoice_id: e.id,
+              invoice_code: e.code,
+              customer: e.customer,
+              source: "INVOICE",
+            })),
+          );
+        return [...s, ...E].sort((t, n) => {
           const c = String(n.created_at).localeCompare(String(t.created_at));
           return c || Number(n.id) - Number(t.id);
         });
