@@ -58184,11 +58184,20 @@ __d(
         );
       }),
       (e.listProductHistory = async function (t, n) {
-        return t.getAllAsync(
-          "\n    SELECT sm.id, sm.product_id, sm.type, sm.qty, sm.unit_cost, sm.note, sm.created_at,\n           p.unit, NULL AS invoice_id, NULL AS invoice_code, NULL AS customer, 'MOVEMENT' AS source\n    FROM stock_movements sm JOIN products p ON p.id = sm.product_id\n    WHERE sm.product_id = ?\n    UNION ALL\n    SELECT ii.id, ii.product_id, 'OUT' AS type, ii.qty, ii.unit_price AS unit_cost,\n           'Xuất theo hóa đơn' AS note, i.created_at, ii.unit, i.id AS invoice_id,\n           i.code AS invoice_code, i.customer, 'INVOICE' AS source\n    FROM invoice_items ii JOIN invoices i ON i.id = ii.invoice_id\n    WHERE ii.product_id = ?\n    ORDER BY created_at DESC, id DESC\n  ",
-          n,
-          n,
-        );
+        const [c, o] = await Promise.all([
+          t.getAllAsync(
+            "SELECT sm.*, p.unit, NULL AS invoice_id, NULL AS invoice_code, NULL AS customer, 'MOVEMENT' AS source FROM stock_movements sm JOIN products p ON p.id = sm.product_id WHERE sm.product_id = ?",
+            n,
+          ),
+          t.getAllAsync(
+            "SELECT ii.id, ii.product_id, 'OUT' AS type, ii.qty, ii.unit_price AS unit_cost, 'Xuất theo hóa đơn' AS note, i.created_at, ii.unit, i.id AS invoice_id, i.code AS invoice_code, i.customer, 'INVOICE' AS source FROM invoice_items ii JOIN invoices i ON i.id = ii.invoice_id WHERE ii.product_id = ?",
+            n,
+          ),
+        ]);
+        return [...c, ...o].sort((t, n) => {
+          const c = String(n.created_at).localeCompare(String(t.created_at));
+          return c || Number(n.id) - Number(t.id);
+        });
       }),
       (e.listCustomers = async function (t, n = "") {
         const c = `%${n.trim()}%`;
