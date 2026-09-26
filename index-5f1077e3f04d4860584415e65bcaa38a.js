@@ -58181,14 +58181,16 @@ __d(
       (e.nextInvoiceCode = async function (t) {
         const n = await t.getAllAsync("SELECT code FROM invoices"),
           c = new Set(n.map((t) => String(t.code ?? "").trim().toUpperCase()));
+        const E = new Date(),
+          R = `${E.getFullYear()}${String(E.getMonth() + 1).padStart(2, "0")}${String(E.getDate()).padStart(2, "0")}`;
         let o =
             n.reduce((t, n) => {
-              const c = /^HD(\d+)$/i.exec(String(n.code ?? "").trim()),
+              const c = new RegExp(`^HD${R}(\\d+)$`, "i").exec(String(n.code ?? "").trim()),
                 o = c ? Number(c[1]) : 0;
               return Number.isSafeInteger(o) ? Math.max(t, o) : t;
             }, 0) + 1,
-          s = `HD${String(o).padStart(6, "0")}`;
-        for (; c.has(s); ) (o += 1), (s = `HD${String(o).padStart(6, "0")}`);
+          s = `HD${R}${String(o).padStart(3, "0")}`;
+        for (; c.has(s); ) (o += 1), (s = `HD${R}${String(o).padStart(3, "0")}`);
         return s;
       }),
       (e.listMovements = async function (t) {
