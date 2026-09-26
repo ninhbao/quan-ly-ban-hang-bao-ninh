@@ -18959,12 +18959,14 @@ __d(
                             style: l.receiptTotals,
                             children: [
                               (0, D.jsxs)(b.default, {
-                                style: l.receiptTotalRow,
+                                style: [l.receiptTotalRow, l.receiptGrandTotal],
                                 children: [
                                   (0, D.jsx)(m.default, {
+                                    style: l.receiptGrandText,
                                     children: "T\u1ed5ng ti\u1ec1n h\xe0ng:",
                                   }),
                                   (0, D.jsx)(m.default, {
+                                    style: l.receiptGrandText,
                                     children: A(o.subtotal),
                                   }),
                                 ],
@@ -18978,31 +18980,6 @@ __d(
                                     }),
                                     (0, D.jsx)(m.default, {
                                       children: A(o.total - o.subtotal),
-                                    }),
-                                  ],
-                                }),
-                              (0, D.jsxs)(b.default, {
-                                style: [l.receiptTotalRow, l.receiptGrandTotal],
-                                children: [
-                                  (0, D.jsx)(m.default, {
-                                    style: l.receiptGrandText,
-                                    children: "T\u1ed5ng c\u1ed9ng:",
-                                  }),
-                                  (0, D.jsx)(m.default, {
-                                    style: l.receiptGrandText,
-                                    children: A(o.total),
-                                  }),
-                                ],
-                              }),
-                              o.paid_amount > 0 &&
-                                (0, D.jsxs)(b.default, {
-                                  style: l.receiptTotalRow,
-                                  children: [
-                                    (0, D.jsx)(m.default, {
-                                      children: "\u0110\xe3 thanh to\xe1n:",
-                                    }),
-                                    (0, D.jsx)(m.default, {
-                                      children: A(o.paid_amount),
                                     }),
                                   ],
                                 }),
