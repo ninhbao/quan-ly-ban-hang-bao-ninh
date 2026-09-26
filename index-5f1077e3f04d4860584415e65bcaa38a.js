@@ -39916,7 +39916,7 @@ __d(
                   ),
                 );
             }, 1e4);
-            (s.onload = () => {
+            (s.onload = async () => {
               window.clearTimeout(l);
               const t = s.contentWindow;
               if (!t)
@@ -39928,6 +39928,20 @@ __d(
                     ),
                   )
                 );
+              await Promise.race([
+                Promise.all(
+                  Array.from(s.contentDocument?.images ?? []).map(
+                    (e) =>
+                      e.complete
+                        ? Promise.resolve()
+                        : new Promise((t) => {
+                            e.addEventListener("load", t, { once: !0 }),
+                              e.addEventListener("error", t, { once: !0 });
+                          }),
+                  ),
+                ),
+                new Promise((e) => window.setTimeout(e, 3e3)),
+              ]),
               t.focus(),
                 t.print(),
                 c(),
