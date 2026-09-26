@@ -21227,7 +21227,7 @@ __d(
               U(t?.phone ?? l?.phone ?? ""),
               J(t ? String(100 * t.vat_rate) : "0"),
               ee(t ? String(t.initial_paid_amount ?? t.paid_amount) : "0"),
-              le(t?.code ?? V()),
+              le(t?.code ?? (await (0, L.nextInvoiceCode)(P))),
               ae(t?.created_at.slice(0, 10) ?? E()),
               re(""),
               t)
@@ -58176,6 +58176,19 @@ __d(
             }, 0) + 1,
           s = `SP${String(o).padStart(6, "0")}`;
         for (; c.has(s); ) (o += 1), (s = `SP${String(o).padStart(6, "0")}`);
+        return s;
+      }),
+      (e.nextInvoiceCode = async function (t) {
+        const n = await t.getAllAsync("SELECT code FROM invoices"),
+          c = new Set(n.map((t) => String(t.code ?? "").trim().toUpperCase()));
+        let o =
+            n.reduce((t, n) => {
+              const c = /^HD(\d+)$/i.exec(String(n.code ?? "").trim()),
+                o = c ? Number(c[1]) : 0;
+              return Number.isSafeInteger(o) ? Math.max(t, o) : t;
+            }, 0) + 1,
+          s = `HD${String(o).padStart(6, "0")}`;
+        for (; c.has(s); ) (o += 1), (s = `HD${String(o).padStart(6, "0")}`);
         return s;
       }),
       (e.listMovements = async function (t) {
