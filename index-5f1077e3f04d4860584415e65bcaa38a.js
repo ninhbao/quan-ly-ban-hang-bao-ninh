@@ -18997,6 +18997,24 @@ __d(
                                 }),
                             ],
                           }),
+                          (0, D.jsxs)(b.default, {
+                            style: l.receiptBankQr,
+                            children: [
+                              (0, D.jsx)(m.default, {
+                                style: l.receiptBankQrTitle,
+                                children: "THANH TO\xc1N QUA NG\xc2N H\xc0NG",
+                              }),
+                              (0, D.jsx)("img", {
+                                src: `https://img.vietqr.io/image/ICB-102879293890-compact2.png?amount=${Math.max(0, Math.round(o.total))}&addInfo=${encodeURIComponent(o.code)}&accountName=HO%20KINH%20DOANH%20BAO%20NINH`,
+                                alt: "M\xe3 QR thanh to\xe1n VietinBank",
+                                style: l.receiptQrImage,
+                              }),
+                              (0, D.jsxs)(m.default, {
+                                style: l.receiptBankQrDetail,
+                                children: ["VietinBank · 102879293890", "\n", "HO KINH DOANH BAO NINH"],
+                              }),
+                            ],
+                          }),
                           (0, D.jsx)(m.default, {
                             style: l.receiptThanks,
                             children: "C\u1ea3m \u01a1n qu\xfd kh\xe1ch!",
@@ -22788,6 +22806,22 @@ __d(
         paddingTop: 8,
       },
       receiptGrandText: { color: "#111", fontSize: 16, fontWeight: "900" },
+      receiptBankQr: {
+        borderTopWidth: 1,
+        borderStyle: "dashed",
+        borderColor: "#333",
+        marginTop: 18,
+        paddingTop: 12,
+        alignItems: "center",
+      },
+      receiptBankQrTitle: { color: "#111", fontSize: 13, fontWeight: "900" },
+      receiptQrImage: { width: 160, height: 160, marginVertical: 8 },
+      receiptBankQrDetail: {
+        color: "#111",
+        fontSize: 12,
+        lineHeight: 17,
+        textAlign: "center",
+      },
       receiptThanks: {
         color: "#111",
         fontSize: 12,
