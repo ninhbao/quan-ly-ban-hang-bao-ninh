@@ -19005,7 +19005,7 @@ __d(
                                 children: "THANH TO\xc1N QUA NG\xc2N H\xc0NG",
                               }),
                               (0, D.jsx)("img", {
-                                src: `/quan-ly-ban-hang-bao-ninh/assets/bao-ninh-vnpay-qr.png?v=1`,
+                                src: `/quan-ly-ban-hang-bao-ninh/bao-ninh-vnpay-qr.png?v=2`,
                                 alt: "M\xe3 QR thanh to\xe1n VietinBank",
                                 style: l.receiptQrImage,
                               }),
@@ -39954,7 +39954,7 @@ __d(
             : p.reduce((n, t) => n + t.qty * t.unit_price, 0),
           u = Math.max(o.total - h, 0),
           f = Math.max(o.total - o.paid_amount, 0),
-          E = `/quan-ly-ban-hang-bao-ninh/assets/bao-ninh-vnpay-qr.png?v=1`,
+          E = `/quan-ly-ban-hang-bao-ninh/bao-ninh-vnpay-qr.png?v=2`,
           v = p
             .map(
               (n) =>
