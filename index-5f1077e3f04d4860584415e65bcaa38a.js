@@ -20281,7 +20281,7 @@ __d(
       const d = Se();
       return (0, D.jsxs)(b.default, {
         style: o
-          ? [d.flex1, { flexBasis: 0, minWidth: 0, maxWidth: "48%" }]
+          ? [{ flexGrow: 0, flexShrink: 0, flexBasis: "34%", maxWidth: "34%" }]
           : { width: "100%", maxWidth: 280, marginBottom: 13 },
         children: [
           (0, D.jsx)(m.default, { style: d.muted, children: e }),
