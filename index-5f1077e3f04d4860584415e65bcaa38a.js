@@ -20318,7 +20318,7 @@ __d(
             children: "L\u1ecdc theo ng\xe0y h\xf3a \u0111\u01a1n",
           }),
           (0, D.jsxs)(b.default, {
-            style: [s.twoCols, { flexDirection: "row", justifyContent: "space-between" }],
+            style: [s.twoCols, { flexDirection: "row", justifyContent: "flex-start", gap: "2cm" }],
             children: [
               (0, D.jsx)(se, {
                 compact: !0,
