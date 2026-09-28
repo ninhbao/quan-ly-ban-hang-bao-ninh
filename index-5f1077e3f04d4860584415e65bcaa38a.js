@@ -18564,8 +18564,8 @@ __d(
                     onPress: () => t("products"),
                   }),
                   (0, D.jsx)(J, {
-                    title: "Nh\u1eadp h\xe0ng",
-                    icon: "\u21e9",
+                    title: "Nh\u1eadp h\xe0ng/Xu\u1ea5t h\xe0ng",
+                    icon: "\u21c5",
                     onPress: () => t("inventory"),
                   }),
                   (0, D.jsx)(J, {
