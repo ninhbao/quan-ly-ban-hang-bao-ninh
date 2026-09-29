@@ -19272,25 +19272,34 @@ __d(
             },
           }),
           (0, D.jsx)(ne, { visible: v, onClose: () => w(!1), onSaved: t }),
-          (0, D.jsx)(we, { product: H, onClose: () => z(null) }),
+          (0, D.jsx)(we, {
+            product: H,
+            onClose: () => z(null),
+            onAsk: P.ask,
+            onChanged: async () => {
+              await k(), t();
+            },
+          }),
           P.dialog,
         ],
       });
     }
-    function we({ product: e, onClose: t }) {
+    function we({ product: e, onClose: t, onAsk: W, onChanged: R }) {
       const l = Se(),
         s = (0, S.useSQLiteContext)(),
         [c, p] = (0, n.useState)([]),
         [y, j] = (0, n.useState)(!0),
         [T, C] = (0, n.useState)(""),
-        [v, w] = (0, n.useState)(null);
+        [v, w] = (0, n.useState)(null),
+        [k, P] = (0, n.useState)(null);
       pe(null !== e);
       (0, n.useEffect)(() => {
         let t = !0;
-        if (!e) return p([]), C(""), j(!1), () => { t = !1; };
+        if (!e) return p([]), C(""), P(null), j(!1), () => { t = !1; };
         return (
           j(!0),
           C(""),
+          P(e.stock),
           (0, L.listProductHistory)(s, e.id)
             .then((e) => { t && p(e); })
             .catch(() => { t && C("Không tải được lịch sử nhập xuất. Vui lòng thử lại."); })
@@ -19298,6 +19307,30 @@ __d(
           () => { t = !1; }
         );
       }, [s, e]);
+      const I = (t) => {
+        if (t.invoice_id)
+          return void window.alert(
+            `Giao dịch thuộc hóa đơn\n\nLần xuất kho này được tạo từ hóa đơn ${t.invoice_code}. Không thể xóa riêng vì sẽ làm sai hóa đơn và tồn kho. Hãy sửa hoặc xóa hóa đơn liên quan.`,
+          );
+        W(
+          "Xóa giao dịch kho?",
+          `${e?.name || t.product_name} · ${"IN" === t.type ? "Nhập" : "Xuất"} ${A(t.qty)} ${t.unit || e?.unit || ""}\nTồn kho sẽ được tính lại ngay sau khi xóa.`,
+          async () => {
+            try {
+              await (0, L.deleteMovement)(s, t.id);
+              const [n, o] = await Promise.all([
+                (0, L.listProductHistory)(s, e.id),
+                (0, L.listProducts)(s),
+              ]);
+              p(n), P(o.find((t) => Number(t.id) === Number(e.id))?.stock ?? null), await R?.();
+            } catch {
+              throw new Error(
+                "Không thể xóa giao dịch kho. Vui lòng thử lại.",
+              );
+            }
+          },
+        );
+      };
       return (0, D.jsxs)(D.Fragment, {
         children: [
           (0, D.jsx)(u.default, {
@@ -19321,21 +19354,30 @@ __d(
                     e && (0, D.jsxs)(b.default, { style: l.backupCard, children: [
                       (0, D.jsx)(m.default, { style: l.sku, children: e.sku }),
                       (0, D.jsx)(m.default, { style: l.rowTitle, children: e.name }),
-                      (0, D.jsxs)(m.default, { style: l.muted, children: ["Tồn hiện tại: ", A(e.stock), " ", e.unit] }),
+                      (0, D.jsxs)(m.default, { style: l.muted, children: ["Tồn hiện tại: ", A(null == k ? e.stock : k), " ", e.unit] }),
                     ] }),
                     y ? (0, D.jsx)(F, {}) : T ? (0, D.jsx)(m.default, { accessibilityRole: "alert", style: l.dangerText, children: T }) : 0 === c.length ? (0, D.jsx)(Te, { text: "Chưa có giao dịch nhập hoặc xuất kho" }) : c.map((e) =>
-                      (0, D.jsxs)(h.default, {
-                        accessibilityRole: "button",
-                        accessibilityLabel: e.invoice_id ? `Xem hóa đơn ${e.invoice_code}` : "Xem chi tiết giao dịch kho",
+                      (0, D.jsxs)(b.default, {
                         style: l.rowCard,
-                        onPress: () => e.invoice_id ? w(e.invoice_id) : o.default.alert("Giao dịch kho", `${e.note || "Không có ghi chú"}\n${N(e.created_at)} · ${"IN" === e.type ? "Nhập" : "Xuất"} ${A(e.qty)} ${e.unit}`),
                         children: [
                           (0, D.jsx)(b.default, { style: [l.moveType, "OUT" === e.type && l.moveOut], children: (0, D.jsx)(m.default, { style: l.moveTypeText, children: "IN" === e.type ? "NHẬP" : "XUẤT" }) }),
-                          (0, D.jsxs)(b.default, { style: l.flex1, children: [
-                            (0, D.jsx)(m.default, { style: l.rowTitle, children: e.invoice_id ? `Hóa đơn ${e.invoice_code}` : (e.note || "Giao dịch kho") }),
-                            (0, D.jsxs)(m.default, { style: l.muted, children: [N(e.created_at), e.customer ? ` · ${e.customer}` : "", e.invoice_id ? " · Chạm để xem hóa đơn" : ""] }),
-                          ] }),
+                          (0, D.jsx)(h.default, {
+                            accessibilityRole: "button",
+                            accessibilityLabel: e.invoice_id ? `Xem hóa đơn ${e.invoice_code}` : "Xem chi tiết giao dịch kho",
+                            style: l.flex1,
+                            onPress: () => e.invoice_id ? w(e.invoice_id) : o.default.alert("Giao dịch kho", `${e.note || "Không có ghi chú"}\n${N(e.created_at)} · ${"IN" === e.type ? "Nhập" : "Xuất"} ${A(e.qty)} ${e.unit}`),
+                            children: (0, D.jsxs)(b.default, { children: [
+                              (0, D.jsx)(m.default, { style: l.rowTitle, children: e.invoice_id ? `Hóa đơn ${e.invoice_code}` : (e.note || "Giao dịch kho") }),
+                              (0, D.jsxs)(m.default, { style: l.muted, children: [N(e.created_at), e.customer ? ` · ${e.customer}` : "", e.invoice_id ? " · Chạm để xem hóa đơn" : ""] }),
+                            ] }),
+                          }),
                           (0, D.jsxs)(m.default, { style: l.qty, children: ["IN" === e.type ? "+" : "-", A(e.qty), " ", e.unit] }),
+                          (0, D.jsx)(h.default, {
+                            accessibilityRole: "button",
+                            accessibilityLabel: e.invoice_id ? `Kiểm tra giao dịch thuộc hóa đơn ${e.invoice_code}` : "Xóa giao dịch kho",
+                            onPress: () => I(e),
+                            children: (0, D.jsx)(m.default, { style: l.deleteText, children: "Xóa" }),
+                          }),
                         ],
                       },
                       `${e.source}-${e.id}`,
@@ -58221,7 +58263,7 @@ __d(
       }),
       (e.listMovements = async function (t) {
         return t.getAllAsync(
-          "\n    SELECT sm.*, p.name AS product_name, p.sku\n    FROM stock_movements sm JOIN products p ON p.id = sm.product_id\n    ORDER BY sm.created_at DESC, sm.id DESC LIMIT 50\n  ",
+          "\n    SELECT sm.*, p.name AS product_name, p.sku, p.unit\n    FROM stock_movements sm JOIN products p ON p.id = sm.product_id\n    ORDER BY sm.created_at DESC, sm.id DESC LIMIT 50\n  ",
         );
       }),
       (e.listProductHistory = async function (t, n) {
