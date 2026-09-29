@@ -58582,12 +58582,15 @@ __d(
       });
     }
     async function c(n, c = "") {
-      const o = `%${c.trim()}%`;
-      return n.getAllAsync(
-        `${t} WHERE p.name LIKE ? OR p.sku LIKE ? ORDER BY p.name`,
-        o,
-        o,
-      );
+      const o = c.trim().toLocaleLowerCase("vi"),
+        s = await n.getAllAsync(`${t} ORDER BY p.name`);
+      return o
+        ? s.filter(
+            (e) =>
+              String(e.name ?? "").toLocaleLowerCase("vi").includes(o) ||
+              String(e.sku ?? "").toLocaleLowerCase("vi").includes(o),
+          )
+        : s;
     }
     async function o(t, n) {
       const c = await t.getFirstAsync(
